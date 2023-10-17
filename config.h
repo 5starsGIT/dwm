@@ -75,6 +75,7 @@ static const char *mutevol[]    = { "pactl",   "set-sink-mute",   "0",      "tog
 
 static const char *light_up[]   = { "brightnessctl", "s", "5%+", NULL };
 static const char *light_down[]   = { "brightnessctl", "s", "5%-", NULL };
+static const char *screenshot[]   = { "maim", "--select", "|", "tee", "~/pictures/screenshots/$(date", "+%s).png", "|", "xclip", "-selection", "clipboard", "-t", "image/png", NULL };
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -106,6 +107,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_s, 	   spawn,          {.v = screenshot} },
+	{ MODKEY,             XK_à, 	   spawn,          {.v = screenshot} },
 	/* Keybindings for Media play/pause/next/previous */
 	{ 0, XF86XK_AudioPlay, spawn, {.v = medplaypausecmd } },
 	{ 0, XF86XK_AudioNext, spawn, {.v = mednextcmd } },
