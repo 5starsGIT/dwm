@@ -8,21 +8,21 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char normbordercolor[] = "#586e75";
+static const char normbgcolor[]     = "#002b36";
+static const char normfgcolor[]     = "#fdf6e3";
+static const char selbordercolor[]  = "#eee8d5";
+static const char selbgcolor[]      = "#586e75";
+static const char selfgcolor[]      = "#fdf6e3";
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
+	[SchemeSel]  = { selfgcolor, selbgcolor,  selbordercolor },
 };
 
 static const char *const autostart[] = {
 	"st", NULL,
 	"picom", NULL,
-	"feh", "--bg-scale", "/home/alex/pictures/Solarized.png", NULL,
+	"feh", "--bg-scale", "/home/alex/Pictures/Solarized.png", NULL,
 	"appimage-run", "/home/alex/AppImages/Obsidian-1.4.14.AppImage", NULL,
 	NULL /* terminate */
 };
@@ -75,11 +75,11 @@ static const char *mutevol[]    = { "pactl",   "set-sink-mute",   "0",      "tog
 
 static const char *light_up[]   = { "brightnessctl", "s", "5%+", NULL };
 static const char *light_down[]   = { "brightnessctl", "s", "5%-", NULL };
-static const char *screenshot[]   = { "maim", "--select", "|", "tee", "~/pictures/screenshots/$(date", "+%s).png", "|", "xclip", "-selection", "clipboard", "-t", "image/png", NULL };
+static const char *screenshot[]   = { "takeScreenShot", NULL };
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
@@ -107,8 +107,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_s, 	   spawn,          {.v = screenshot} },
-	{ MODKEY,             XK_à, 	   spawn,          {.v = screenshot} },
+	{ 0,             XK_Print, 	   spawn,          {.v = screenshot} },
+	{ MODKEY|ShiftMask,             XK_f, 		togglefullscr,         {0} },
 	/* Keybindings for Media play/pause/next/previous */
 	{ 0, XF86XK_AudioPlay, spawn, {.v = medplaypausecmd } },
 	{ 0, XF86XK_AudioNext, spawn, {.v = mednextcmd } },
