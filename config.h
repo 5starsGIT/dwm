@@ -8,21 +8,22 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char normbordercolor[] = "#1f1d2e";
-static const char normbgcolor[]     = "#26233a";
+static const char selfgcolor[]      = "#191724";
+static const char normbgcolor[]     = "#1f1d2e";
+static const char normbordercolor[] = "#26233a";
 static const char normfgcolor[]     = "#908caa";
-static const char selbordercolor[]  = "#f6c177";
-static const char selbgcolor[]      = "#31748f";
-static const char selfgcolor[]      = "#ebbcba";
+static const char selbordercolor[]  = "#9ccfd8";
+static const char selbgcolor[]      = "#c4a7e7";
 static const char *colors[][3]      = {
 	[SchemeNorm] = { normfgcolor, normbgcolor, normbordercolor },
 	[SchemeSel]  = { selfgcolor, selbgcolor,  selbordercolor },
 };
 
 static const char *const autostart[] = {
+	"/home/alex/Documents/date.sh", NULL,
 	"st", NULL,
 	"picom", NULL,
-	"feh", "--bg-scale", "/home/alex/Pictures/Solarized.png", NULL,
+	"feh", "--bg-scale", "/home/alex/Pictures/pine/wallpapers/rocks.jpg", NULL,
 	"appimage-run", "/home/alex/AppImages/Obsidian-1.4.14.AppImage", NULL,
 	NULL /* terminate */
 };

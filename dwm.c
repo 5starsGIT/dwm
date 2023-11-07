@@ -730,10 +730,10 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
-	int x, w, tw = 0;
+	int x, w, tw = 0, pw, mw, ew = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
-	unsigned int i, occ = 0, urg = 0;
+	unsigned int i, occ = 0, urg = 0, n = 0;
 	Client *c;
 
 	if (!m->showbar)
@@ -747,6 +747,8 @@ drawbar(Monitor *m)
 	}
 
 	for (c = m->clients; c; c = c->next) {
+        if (ISVISIBLE(c))
+            n++;
 		occ |= c->tags;
 		if (c->isurgent)
 			urg |= c->tags;
@@ -757,9 +759,10 @@ drawbar(Monitor *m)
 		drw_setscheme(drw, scheme[m->tagset[m->seltags] & 1 << i ? SchemeSel : SchemeNorm]);
 		drw_text(drw, x, 0, w, bh, lrpad / 2, tags[i], urg & 1 << i);
 		if (occ & 1 << i)
-			drw_rect(drw, x + boxs, boxs, boxw, boxw,
-				m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
-				urg & 1 << i);
+            drw_rect(drw, x + boxs, boxs, boxw, boxw,
+                m == selmon && selmon->sel && selmon->sel->tags & 1 << i,
+                urg & 1 << i);
+
 		x += w;
 	}
 	w = TEXTW(m->ltsymbol);
@@ -767,16 +770,50 @@ drawbar(Monitor *m)
 	x = drw_text(drw, x, 0, w, bh, lrpad / 2, m->ltsymbol, 0);
 
 	if ((w = m->ww - tw - x) > bh) {
-		if (m->sel) {
-			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
-			if (m->sel->isfloating)
-				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
-		} else {
-			drw_setscheme(drw, scheme[SchemeNorm]);
-			drw_rect(drw, x, 0, w, bh, 1, 1);
+	// 	if (m->sel) {
+	// 		drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
+	// 		drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+	// 		if (m->sel->isfloating)
+	// 			drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
+	// 	} else {
+	// 		drw_setscheme(drw, scheme[SchemeNorm]);
+	// 		drw_rect(drw, x, 0, w, bh, 1, 1);
+	// 	}
+	// }
+        if (n > 0) {
+			pw = TEXTW(m->sel->name) + lrpad;
+			mw = (pw >= w || n == 1) ? 0 : (w - pw) / (n - 1);
+
+			i = 0;
+			for (c = m->clients; c; c = c->next) {
+				if (!ISVISIBLE(c) || c == m->sel)
+					continue;
+				pw = TEXTW(c->name);
+				if(pw < mw)
+					ew += (mw - pw);
+				else
+					i++;
+			}
+			if (i > 0)
+				mw += ew / i;
+
+			for (c = m->clients; c; c = c->next) {
+				if (!ISVISIBLE(c))
+					continue;
+				pw = MIN(m->sel == c ? w : mw, TEXTW(c->name));
+
+				drw_setscheme(drw, scheme[m->sel == c ? SchemeSel : SchemeNorm]);
+				if (pw > 0) /* trap special handling of 0 in drw_text */
+					drw_text(drw, x, 0, pw, bh, lrpad / 2, c->name, 0);
+				if (c->isfloating)
+					drw_rect(drw, x + boxs, boxs, boxw, boxw, c->isfixed, 0);
+				x += pw;
+				w -= pw;
+			}
 		}
-	}
+		drw_setscheme(drw, scheme[SchemeNorm]);
+		drw_rect(drw, x, 0, w, bh, 1, 1);
+    }
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
 }
 
