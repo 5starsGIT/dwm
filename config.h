@@ -22,6 +22,7 @@ static const char *colors[][3]      = {
 static const char *const autostart[] = {
 	"/home/alex/Documents/date.sh", NULL,
 	"st", NULL,
+	"dunst", NULL,
 	"picom", NULL,
 	"feh", "--bg-scale", "/home/alex/Pictures/pine/wallpapers/rocks.jpg", NULL,
 	"appimage-run", "/home/alex/AppImages/Obsidian-1.4.14.AppImage", NULL,
